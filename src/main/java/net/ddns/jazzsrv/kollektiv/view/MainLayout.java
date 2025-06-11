@@ -48,23 +48,27 @@ public class MainLayout extends AppLayout {
         addToDrawer(menu);
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"))) {
-            	RouterLink adminLink = new RouterLink("Benutzerverwaltung", BenutzerVerwaltungView.class);
-            	menu.add(adminLink);
-            	adminLink.getElement().getStyle().set("margin", "var(--lumo-space-s)");
-            	RouterLink catLink = new RouterLink("Kategorien", CategoryView.class);
-            	menu.add(catLink);
-            	catLink.getElement().getStyle().set("margin", "var(--lumo-space-s)");
+
+        	//            	RouterLink adminLink = new RouterLink("Benutzerverwaltung", BenutzerVerwaltungView.class);
+//            	menu.add(adminLink);
+//            	adminLink.getElement().getStyle().set("margin", "var(--lumo-space-s)");
+//            	
+//            	RouterLink catLink = new RouterLink("Kategorien", CategoryView.class);
+//            	menu.add(catLink);
+//            	catLink.getElement().getStyle().set("margin", "var(--lumo-space-s)");
         }
-    	RouterLink taskLink = new RouterLink("Aufgaben", TaskView.class);
-    	menu.add(taskLink);
-    	//taskLink.getElement().getStyle().set("margin", "var(--lumo-space-s)");
-    	RouterLink projectLink = new RouterLink("Projekte", ProjectView.class);
-    	menu.add(projectLink);
+    	RouterLink adminLink = new RouterLink("Benutzerverwaltung", UserGroupEditorView.class);
+    	menu.add(adminLink);
+//    	RouterLink taskLink = new RouterLink("Aufgaben", TaskView.class);
+//    	menu.add(taskLink);
+//    	//taskLink.getElement().getStyle().set("margin", "var(--lumo-space-s)");
+//    	RouterLink projectLink = new RouterLink("Projekte", ProjectView.class);
+//    	menu.add(projectLink);
     	//projectLink.getElement().getStyle().set("margin", "var(--lumo-space-s)");
 
     	
-    	RouterLink projectTreeLink = new RouterLink("Projekte als Baum", ProjectTreeView.class);
-    	menu.add(projectTreeLink);
+//    	RouterLink projectTreeLink = new RouterLink("Projekte als Baum", ProjectTreeView.class);
+//    	menu.add(projectTreeLink);
     	
     	//projectTreeLink.getElement().getStyle().set("margin", "var(--lumo-space-s)");
 
