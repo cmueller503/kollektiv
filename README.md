@@ -87,3 +87,18 @@ Mit *kollektiv* ist das Ziel, jeden Tag einfacher und effizienter zu gestalten, 
 6. Gruppenleiter können Aufgaben anderen Benutzern zuweisen.
 
 Das grundlegende Konzept ist auf diese Weise aufgebaut, um sicherzustellen, dass die Anforderungen der Benutzer und die Flexibilität der Anwendung berücksichtigt werden. Du kannst weitere Funktionen und Features hinzufügen, wie z.B. Aufgaben-Reminder, Integration mit externen Tools, usw.
+
+## Datenbank
+
+### MariaDB on macos
+
+Siehe [Anleitung](https://mariadb.com/kb/en/installing-mariadb-on-macos-using-homebrew/)
+
+
+    mysql.server start
+
+    
+## Benutzer und Rollen
+
+Es wird [Spring Security](https://docs.spring.io/spring-security/reference/servlet/authorization/architecture.html) für das Handling der Benutzer-Rollen verwendet.
+

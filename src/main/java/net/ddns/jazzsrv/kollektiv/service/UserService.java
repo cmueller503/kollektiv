@@ -19,8 +19,8 @@ public class UserService {
 	 
 
 	public void save(User benutzer) {
-		repository.save(benutzer);
 		
+		repository.save(benutzer);
 	}
 
 	public void delete(User benutzer) {

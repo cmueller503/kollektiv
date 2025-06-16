@@ -1,6 +1,8 @@
 package net.ddns.jazzsrv.kollektiv.entity;
 
-import java.util.List;
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -10,10 +12,12 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Pattern.Flag;
 
 @Entity
+@Table(name = "tb_user")
 public class User {
 
 	@Id
@@ -29,13 +33,15 @@ public class User {
 	@Email(regexp = "[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,3}", flags=Flag.CASE_INSENSITIVE)
 	private String email;
 	
-   @ManyToMany(fetch = FetchType.LAZY)
+   @ManyToMany(fetch = FetchType.EAGER)
    @JoinTable(
-        name = "user_group",
+        name = "user_x_group",
         joinColumns = @JoinColumn(name = "user_id"),
         inverseJoinColumns = @JoinColumn(name = "group_id")
     )
-    private List<Group> groups;
+    private Set<Group> groups = new HashSet<Group>();
+   
+   
 	
 
 	public Long getUserId() {
@@ -78,12 +84,29 @@ public class User {
 		this.email = email;
 	}
 
-	public List<Group> getGroups() {
+	public Set<Group> getGroups() {
 		return groups;
 	}
 
-	public void setGroups(List<Group> groups) {
+	public void setGroups(Set<Group> groups) {
 		this.groups = groups;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(userId);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		User other = (User) obj;
+		return Objects.equals(userId, other.userId);
 	}
 	
 	

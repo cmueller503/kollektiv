@@ -8,4 +8,6 @@ import net.ddns.jazzsrv.kollektiv.entity.User;
 
 public interface UserRepository extends JpaRepository<User, Long> {
 	Optional<User> findByUserName(String username);
+	
+	
 }

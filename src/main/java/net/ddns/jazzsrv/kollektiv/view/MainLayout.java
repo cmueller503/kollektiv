@@ -57,8 +57,10 @@ public class MainLayout extends AppLayout {
 //            	menu.add(catLink);
 //            	catLink.getElement().getStyle().set("margin", "var(--lumo-space-s)");
         }
-    	RouterLink adminLink = new RouterLink("Benutzerverwaltung", UserGroupEditorView.class);
+    	RouterLink adminLink = new RouterLink("Benutzerverwaltung UserManagementView", UserManagementView.class);
     	menu.add(adminLink);
+    	RouterLink adminLink2 = new RouterLink("Benutzerverwaltung UserGroupView", UserGroupView.class);
+    	menu.add(adminLink2);
 //    	RouterLink taskLink = new RouterLink("Aufgaben", TaskView.class);
 //    	menu.add(taskLink);
 //    	//taskLink.getElement().getStyle().set("margin", "var(--lumo-space-s)");

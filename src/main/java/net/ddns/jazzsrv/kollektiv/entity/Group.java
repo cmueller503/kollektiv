@@ -1,6 +1,8 @@
 package net.ddns.jazzsrv.kollektiv.entity;
 
-import java.util.List;
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -12,7 +14,7 @@ import jakarta.persistence.Table;
 
 
 @Entity
-@Table(name = "`group`")
+@Table(name = "tb_group")
 public class Group {
 	
     @Id
@@ -22,7 +24,7 @@ public class Group {
     private String groupName;
 
     @ManyToMany(mappedBy = "groups", fetch = FetchType.LAZY)
-    private List<User> users;
+    private Set<User> users = new HashSet<User>();
 
 	public Long getGroupId() {
 		return groupId;
@@ -40,12 +42,31 @@ public class Group {
 		this.groupName = groupName;
 	}
 
-	public List<User> getUsers() {
+	public Set<User> getUsers() {
 		return users;
 	}
 
-	public void setUsers(List<User> users) {
+	public void setUsers(Set<User> users) {
 		this.users = users;
 	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(groupId);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Group other = (Group) obj;
+		return Objects.equals(groupId, other.groupId);
+	}
+	
+	
 
 }

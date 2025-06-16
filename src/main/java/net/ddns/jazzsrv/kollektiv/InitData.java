@@ -6,7 +6,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import net.ddns.jazzsrv.kollektiv.entity.Group;
 import net.ddns.jazzsrv.kollektiv.entity.User;
+import net.ddns.jazzsrv.kollektiv.repository.GroupRepository;
 import net.ddns.jazzsrv.kollektiv.repository.UserRepository;
 
 
@@ -15,14 +17,49 @@ import net.ddns.jazzsrv.kollektiv.repository.UserRepository;
 public class InitData {
 
     @Bean
-    public CommandLineRunner init(UserRepository benutzerRepository, PasswordEncoder encoder) {
+    public CommandLineRunner init(UserRepository benutzerRepository, PasswordEncoder encoder, GroupRepository groupRepository) {
         return args -> {
-            if (benutzerRepository.findByUserName("admin").isEmpty()) {
-                User admin = new User();
-                admin.setUserName("admin");
-                admin.setPasswort(encoder.encode("geheim"));
+            if (groupRepository.findByGroupName("admin").isEmpty()) {
+                Group adminGroup = new Group();
+                adminGroup.setGroupName("admin");
+                Group admin_group = groupRepository.save(adminGroup);
+                if (benutzerRepository.findByUserName("admin").isEmpty()) {
+                    User admin = new User();
+                    admin.setUserName("admin");
+                    admin.setPasswort(encoder.encode("geheim"));
+                    admin.getGroups().add(admin_group);
+//                    admin.setRolle("ROLE_ADMIN");
+                    admin = benutzerRepository.save(admin);
+                }
+            }
+            // Erst Gruppe anlegen, dann Benutzer und Gruppe dem Benutzer hinzufügen: funktioniert!
+            if (groupRepository.findByGroupName("project_x").isEmpty()) {
+                Group group = new Group();
+                group.setGroupName("project_x");
+                group = groupRepository.save(group);
+                if (benutzerRepository.findByUserName("user_x").isEmpty()) {
+                    User user = new User();
+                    user.setUserName("user_x");
+                    user.setPasswort(encoder.encode("geheim"));
+                    user.getGroups().add(group);
+//                    admin.setRolle("ROLE_ADMIN");
+                    user = benutzerRepository.save(user);
+                }
+            }
+            // Erst Benutzer anlegen, dann Gruppe und Benutzer der Gruppe hinzufügen: funktioniert nicht!
+            if (benutzerRepository.findByUserName("user_y").isEmpty()) {
+                User user = new User();
+                user.setUserName("user_y");
+                user.setPasswort(encoder.encode("geheim"));
 //                admin.setRolle("ROLE_ADMIN");
-                benutzerRepository.save(admin);
+                user = benutzerRepository.save(user);
+                if (groupRepository.findByGroupName("project_y").isEmpty()) {
+                    Group group = new Group();
+                    group.setGroupName("project_y");
+                    group.getUsers().add(user);
+                    group = groupRepository.save(group);
+                }
+                
             }
         };
     }
