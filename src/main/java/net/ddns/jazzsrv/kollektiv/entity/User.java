@@ -4,7 +4,12 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
+import jakarta.persistence.CollectionTable;
+import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -28,19 +33,24 @@ public class User {
 	
 	private String passwort;
 	
-	private String role;
+	//private String role;
 	
 	@Email(regexp = "[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,3}", flags=Flag.CASE_INSENSITIVE)
 	private String email;
 	
-   @ManyToMany(fetch = FetchType.EAGER)
-   @JoinTable(
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
         name = "user_x_group",
         joinColumns = @JoinColumn(name = "user_id"),
         inverseJoinColumns = @JoinColumn(name = "group_id")
     )
     private Set<Group> groups = new HashSet<Group>();
    
+    @ElementCollection(targetClass = Role.class, fetch = FetchType.EAGER)
+    @CollectionTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"))
+    @Column(name = "role")
+    @Enumerated(EnumType.STRING)
+    private Set<Role> roles = new HashSet<>();   
    
 	
 
@@ -68,13 +78,13 @@ public class User {
 		this.passwort = password;
 	}
 
-	public String getRole() {
-		return role;
-	}
-
-	public void setRole(String role) {
-		this.role = role;
-	}
+//	public String getRole() {
+//		return role;
+//	}
+//
+//	public void setRole(String role) {
+//		this.role = role;
+//	}
 
 	public String getEmail() {
 		return email;
@@ -91,6 +101,21 @@ public class User {
 	public void setGroups(Set<Group> groups) {
 		this.groups = groups;
 	}
+	
+
+	public Set<Role> getRoles() {
+		return roles;
+	}
+
+	public void setRoles(Set<Role> roles) {
+		this.roles = roles;
+	}
+	
+	
+	public boolean hasRole(Role role) {
+        return roles.contains(role);
+    }
+
 
 	@Override
 	public int hashCode() {

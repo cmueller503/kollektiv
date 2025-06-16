@@ -1,12 +1,16 @@
 package net.ddns.jazzsrv.kollektiv;
 
 
+import java.util.Arrays;
+import java.util.HashSet;
+
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import net.ddns.jazzsrv.kollektiv.entity.Group;
+import net.ddns.jazzsrv.kollektiv.entity.Role;
 import net.ddns.jazzsrv.kollektiv.entity.User;
 import net.ddns.jazzsrv.kollektiv.repository.GroupRepository;
 import net.ddns.jazzsrv.kollektiv.repository.UserRepository;
@@ -28,6 +32,7 @@ public class InitData {
                     admin.setUserName("admin");
                     admin.setPasswort(encoder.encode("geheim"));
                     admin.getGroups().add(admin_group);
+                    admin.setRoles(new HashSet<Role>(Arrays.asList(Role.ADMIN)));
 //                    admin.setRolle("ROLE_ADMIN");
                     admin = benutzerRepository.save(admin);
                 }
@@ -42,6 +47,7 @@ public class InitData {
                     user.setUserName("user_x");
                     user.setPasswort(encoder.encode("geheim"));
                     user.getGroups().add(group);
+                    user.setRoles(new HashSet<Role>(Arrays.asList(Role.MANAGER, Role.USER)));
 //                    admin.setRolle("ROLE_ADMIN");
                     user = benutzerRepository.save(user);
                 }
@@ -51,6 +57,7 @@ public class InitData {
                 User user = new User();
                 user.setUserName("user_y");
                 user.setPasswort(encoder.encode("geheim"));
+                user.setRoles(new HashSet<Role>(Arrays.asList(Role.USER)));
 //                admin.setRolle("ROLE_ADMIN");
                 user = benutzerRepository.save(user);
                 if (groupRepository.findByGroupName("project_y").isEmpty()) {

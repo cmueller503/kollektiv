@@ -21,7 +21,7 @@ import net.ddns.jazzsrv.kollektiv.entity.User;
 import net.ddns.jazzsrv.kollektiv.service.GroupService;
 import net.ddns.jazzsrv.kollektiv.service.UserService;
 
-@Route(value = "user-management", layout = MainLayout.class)
+@Route(value = "admin/user-management", layout = MainLayout.class)
 @PageTitle("Benutzerverwaltung UserManagementView")
 @PermitAll
 public class UserManagementView extends VerticalLayout {
@@ -34,7 +34,7 @@ public class UserManagementView extends VerticalLayout {
 
     private final TextField userNameField = new TextField("Username");
     private final TextField passwordField = new TextField("Password");
-    private final TextField roleField = new TextField("Role");
+//    private final TextField roleField = new TextField("Role");
     private final TextField emailField = new TextField("Email");
 
     private final Button addUserButton = new Button("Add User");
@@ -50,7 +50,8 @@ public class UserManagementView extends VerticalLayout {
         this.groupService = groupService;
 
         // Configure grids
-        userGrid.setColumns("userId", "userName", "role", "email");
+        userGrid.setColumns("userId", "userName", //"role", 
+        		"email");
         userGrid.addColumn(user ->
         user.getGroups().stream().map(Group::getGroupName).collect(Collectors.joining(", ")))
         .setHeader("Gruppen");
@@ -66,7 +67,7 @@ public class UserManagementView extends VerticalLayout {
         // Configure fields
         userBinder.forField(userNameField).withValidator(new EmailValidator("Invalid email format")).bind(User::getUserName, User::setUserName);
         userBinder.forField(passwordField).bind(User::getPasswort, User::setPasswort);
-        userBinder.forField(roleField).bind(User::getRole, User::setRole);
+//        userBinder.forField(roleField).bind(User::getRole, User::setRole);
         userBinder.forField(emailField).withValidator(new EmailValidator("Invalid email format")).bind(User::getEmail, User::setEmail);
 
         // Configure ComboBox
@@ -76,7 +77,8 @@ public class UserManagementView extends VerticalLayout {
 
         // Configure layout
         HorizontalLayout header = new HorizontalLayout(addUserButton, saveUserButton, deleteUserButton);
-        add(header, userGrid, new FormLayout(userNameField, passwordField, roleField, emailField, groupComboBox), groupGrid);
+        add(header, userGrid, new FormLayout(userNameField, passwordField, //roleField, 
+        		emailField, groupComboBox), groupGrid);
 
         // Load data
         userGrid.setItems(userService.findAll());
@@ -113,7 +115,7 @@ public class UserManagementView extends VerticalLayout {
     	boolean visible = userGrid.asSingleSelect().getValue() != null;
     	userNameField.setVisible(visible);
     	passwordField.setVisible(visible);
-    	roleField.setVisible(visible);
+    	//roleField.setVisible(visible);
     	emailField.setVisible(visible);
     	groupComboBox.setVisible(visible);
     }

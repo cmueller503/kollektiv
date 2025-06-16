@@ -21,6 +21,7 @@ import com.vaadin.flow.router.Route;
 
 import jakarta.annotation.security.PermitAll;
 import net.ddns.jazzsrv.kollektiv.entity.Group;
+import net.ddns.jazzsrv.kollektiv.entity.Role;
 import net.ddns.jazzsrv.kollektiv.entity.User;
 import net.ddns.jazzsrv.kollektiv.service.GroupService;
 import net.ddns.jazzsrv.kollektiv.service.UserService;
@@ -64,7 +65,8 @@ public class UserGroupView extends VerticalLayout {
 
         Grid.Column<User> nameCol = userGrid.addColumn(User::getUserName).setHeader("Benutzername");
         Grid.Column<User> emailCol = userGrid.addColumn(User::getEmail).setHeader("E-Mail");
-        Grid.Column<User> roleCol = userGrid.addColumn(User::getRole).setHeader("Rolle");
+        //Grid.Column<User> roleCol = userGrid.addColumn(User::getRole).setHeader("Rolle");
+        Grid.Column<User> rolesCol = userGrid.addColumn(User::getRoles).setHeader("Rollen");
         Grid.Column<User> groupCol = userGrid.addColumn(user ->
                 user.getGroups().stream().map(Group::getGroupName).collect(Collectors.joining(", ")))
                 .setHeader("Gruppen");
@@ -85,9 +87,9 @@ public class UserGroupView extends VerticalLayout {
               .bind(User::getEmail, User::setEmail);
         emailCol.setEditorComponent(emailField);
 
-        TextField roleField = new TextField();
-        userBinder.bind(roleField, User::getRole, User::setRole);
-        roleCol.setEditorComponent(roleField);
+//        TextField roleField = new TextField();
+//        userBinder.bind(roleField, User::getRole, User::setRole);
+//        roleCol.setEditorComponent(roleField);
 
         MultiSelectComboBox<Group> groupSelector = new MultiSelectComboBox<>("Gruppen");
         groupSelector.setItems(groupService.findAll());
@@ -96,6 +98,13 @@ public class UserGroupView extends VerticalLayout {
         groupCol.setEditorComponent(groupSelector);
         //groupSelector.addValueChangeListener(e -> Logger.getLogger("ValueChangeListener").warning("CM_DEBUG!!!! Gruppen: " + e.getValue().size()));
 
+        MultiSelectComboBox<Role> rolesSelector = new MultiSelectComboBox<>("Rollen");
+        rolesSelector.setItems(Role.valuesAsSet());
+        rolesSelector.setItemLabelGenerator(Role::getName);
+        userBinder.forField(rolesSelector).bind(User::getRoles, User::setRoles);
+        rolesCol.setEditorComponent(rolesSelector);
+
+        
         editor.addCloseListener(e -> updateGrids());
     }
 
