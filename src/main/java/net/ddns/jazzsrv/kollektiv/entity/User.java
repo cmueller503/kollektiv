@@ -54,6 +54,11 @@ public class User {
    
 	
 
+	public User() {
+		super();
+		roles.add(Role.USER);
+	}
+
 	public Long getUserId() {
 		return userId;
 	}

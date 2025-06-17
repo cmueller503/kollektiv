@@ -37,10 +37,14 @@ public class UserGroupView extends VerticalLayout {
     private final Grid<User> userGrid = new Grid<>(User.class, false);
     private final Grid<Group> groupGrid = new Grid<>(Group.class, false);
 
+    MultiSelectComboBox<Group> groupSelector = new MultiSelectComboBox<>("Gruppen");
+
+    
     public UserGroupView(UserService userService, GroupService groupService) {
         this.userService = userService;
         this.groupService = groupService;
-
+        
+        
         setSizeFull();
         setPadding(true);
         setSpacing(true);
@@ -91,12 +95,11 @@ public class UserGroupView extends VerticalLayout {
 //        userBinder.bind(roleField, User::getRole, User::setRole);
 //        roleCol.setEditorComponent(roleField);
 
-        MultiSelectComboBox<Group> groupSelector = new MultiSelectComboBox<>("Gruppen");
+        
         groupSelector.setItems(groupService.findAll());
         groupSelector.setItemLabelGenerator(Group::getGroupName);
         userBinder.forField(groupSelector).bind(User::getGroups, User::setGroups);
         groupCol.setEditorComponent(groupSelector);
-        //groupSelector.addValueChangeListener(e -> Logger.getLogger("ValueChangeListener").warning("CM_DEBUG!!!! Gruppen: " + e.getValue().size()));
 
         MultiSelectComboBox<Role> rolesSelector = new MultiSelectComboBox<>("Rollen");
         rolesSelector.setItems(Role.valuesAsSet());
@@ -111,9 +114,7 @@ public class UserGroupView extends VerticalLayout {
     private HorizontalLayout createUserActionButtons(User user) {
         Button edit = new Button(new Icon(VaadinIcon.EDIT), e -> userGrid.getEditor().editItem(user));
         Button save = new Button(new Icon(VaadinIcon.CHECK), e -> {
-            userGrid.getEditor().save();
-            
-            Logger.getLogger("MyLogger").warning("CM_DEBUG saveButton clicked, user=" + user.getUserName() + "  Gruppen: " + user.getGroups().size());
+            userGrid.getEditor().save();            
             userService.save(user);
             updateGrids();
         });
@@ -157,7 +158,7 @@ public class UserGroupView extends VerticalLayout {
         binder.bind(groupField, Group::getGroupName, Group::setGroupName);
         nameCol.setEditorComponent(groupField);
 
-//        groupGrid.addItemClickListener(e -> {
+//        groupGrid.addItemDoubleClickListener(e -> {
 //            editor.editItem(e.getItem());
 //            groupField.focus();
 //        });
@@ -195,5 +196,6 @@ public class UserGroupView extends VerticalLayout {
     private void updateGrids() {
         userGrid.setItems(userService.findAll());
         groupGrid.setItems(groupService.findAll());
+        groupSelector.setItems(groupService.findAll());
     }
 }

@@ -15,8 +15,10 @@ import com.vaadin.flow.component.orderedlayout.FlexComponent.Alignment;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.RouterLink;
+import com.vaadin.flow.server.VaadinSession;
 
 import net.ddns.jazzsrv.kollektiv.entity.Role;
+import net.ddns.jazzsrv.kollektiv.exception.CustomErrorHandler;
 
 public class MainLayout extends AppLayout {
 	
@@ -25,6 +27,8 @@ public class MainLayout extends AppLayout {
 	
 
     public MainLayout() {
+		
+
         createHeader();
         createDrawer();
         setDrawerOpened(false);
@@ -61,22 +65,7 @@ public class MainLayout extends AppLayout {
         VerticalLayout menu = new VerticalLayout();
         menu.add(new RouterLink("Startseite", MainView.class));
         addToDrawer(menu);
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         
-        
-        auth.getAuthorities().stream().forEach(a -> 
-        LoggerFactory.getLogger(this.getClass()).error("CM_DEBUG authority " + a.getAuthority())
-        );
-        if (auth.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"))) {
-
-        	//            	RouterLink adminLink = new RouterLink("Benutzerverwaltung", BenutzerVerwaltungView.class);
-//            	menu.add(adminLink);
-//            	adminLink.getElement().getStyle().set("margin", "var(--lumo-space-s)");
-//            	
-//            	RouterLink catLink = new RouterLink("Kategorien", CategoryView.class);
-//            	menu.add(catLink);
-//            	catLink.getElement().getStyle().set("margin", "var(--lumo-space-s)");
-        }
         
         if( isAuthorized(Role.ADMIN)) {
         	RouterLink adminLink2 = new RouterLink("Benutzerverwaltung UserGroupView", UserGroupView.class);
@@ -89,24 +78,15 @@ public class MainLayout extends AppLayout {
         }
         
 
-    	
-    	RouterLink managerViewLink = new RouterLink("ManagerView", ManagerView.class);
-    	menu.add(managerViewLink);
-    	RouterLink userViewLink = new RouterLink("UserView", UserView.class);
-    	menu.add(userViewLink);
-    	
-//    	RouterLink taskLink = new RouterLink("Aufgaben", TaskView.class);
-//    	menu.add(taskLink);
-//    	//taskLink.getElement().getStyle().set("margin", "var(--lumo-space-s)");
-//    	RouterLink projectLink = new RouterLink("Projekte", ProjectView.class);
-//    	menu.add(projectLink);
-    	//projectLink.getElement().getStyle().set("margin", "var(--lumo-space-s)");
-
-    	
-//    	RouterLink projectTreeLink = new RouterLink("Projekte als Baum", ProjectTreeView.class);
-//    	menu.add(projectTreeLink);
-    	
-    	//projectTreeLink.getElement().getStyle().set("margin", "var(--lumo-space-s)");
+        if( isAuthorized(Role.MANAGER)) {
+        	RouterLink managerViewLink = new RouterLink("ManagerView", ManagerView.class);
+        	menu.add(managerViewLink);
+        }
+        
+        if( isAuthorized(Role.USER)) {
+        	RouterLink userViewLink = new RouterLink("UserView", UserView.class);
+        	menu.add(userViewLink);
+        }
 
     }
 
@@ -114,17 +94,9 @@ public class MainLayout extends AppLayout {
         UI.getCurrent().getPage().setLocation("/login");
     }
     
-    private boolean isAuthorized( Role role ) {
-    	if( role == null ) {
-    		return false;
-    	}
-    	var authList = SecurityContextHolder.getContext().getAuthentication().getAuthorities();
-    	for( var auth : authList ) {
-    		if( auth.toString().contentEquals("ROLE_" + role.name())) {
-    			return true;
-    		}
-    	}
-    	//.forEach( a -> a.getAuthority());
-    	return false;
+    private boolean isAuthorized( Role role ) {  
+    	// Check, if role is found in security context
+    	return role == null ? false : SecurityContextHolder.getContext().getAuthentication().getAuthorities().stream()
+    	.anyMatch(a -> a.toString().contentEquals("ROLE_" + role.name()));
     }
 }
